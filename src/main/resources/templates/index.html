@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head (#{msg.index.page.title})"></head>
+
+<body class="d-flex flex-column h-100">
+
+<!--Insertar el fragmento del header -->
+<header th:replace="fragments/header :: header"></header>
+
+<!-- Contenido dinamico -->
+<main class="position-relative bg-light" style="height: 100vh;">
+    <div class="position-absolute top-50 start-50 translate-middle text-center"></div>
+    <h1 class="display-4 fw-bold">Bookinder</h1>
+    <p class="lead text-muted">
+        <strong>JAIME</strong> - <span th:text="#{msg.index.description}">Aplicación web para gestionar una app de libros.</span>
+    </p>
+</main>
+<!-- Insertar el fragmento del footer -->
+<footer th:replace="fragments/footer :: footer"></footer>
+<div th:replace="fragments/scripts :: scripts"></div>
+</body>
