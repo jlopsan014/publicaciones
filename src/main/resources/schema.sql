@@ -5,8 +5,12 @@ CREATE TABLE IF NOT EXISTS libros (
     titulo VARCHAR(100) NOT NULL,
     autor VARCHAR(100) NOT NULL,
     editorial VARCHAR(100) NOT NULL,
-    anio_publicacion VARCHAR(10) NOT NULL
+    anio_publicacion VARCHAR(10) NOT NULL,
+    url_portada VARCHAR(255)
     );
+
+-- Para bases de datos creadas antes de añadir la portada: añade la columna si no existe
+ALTER TABLE libros ADD COLUMN IF NOT EXISTS url_portada VARCHAR(255);
 -- Tabla del lado N. la cual trae la foreing key de libro_id
 CREATE TABLE IF NOT EXISTS publicaciones (
     id INT AUTO_INCREMENT PRIMARY KEY,

@@ -15,4 +15,5 @@ public class LibroDTO {
     private String autor;
     private String editorial;
     private String anioPublicacion;
+    private String urlPortada;
 }

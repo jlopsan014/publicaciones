@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head (#{msg.libro-form.page.title})}"></head>
+
+<body class="d-flex flex-column h-100">
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<main class="form-page">
+    <div class="form-card">
+
+        <!-- Alta si no hay id (LibroCreateDTO), edición si lo hay (LibroUpdateDTO) -->
+        <h1 th:text="${libro.id} == null ? #{msg.libro-form.title.new} : #{msg.libro-form.title.edit}"></h1>
+
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <form th:action="${libro.id} == null ? @{/libros/insert} : @{/libros/update}"
+              th:object="${libro}" method="post" enctype="multipart/form-data" class="mt-3">
+            <!-- enctype="multipart/form-data" es OBLIGATORIO para poder enviar ficheros -->
+
+            <input type="hidden" th:field="*{id}"/>
+
+            <!-- ISBN: el atributo del DTO se llama ISBN (en mayúsculas), así que aquí también -->
+            <div class="mb-3">
+                <label for="isbn" class="form-label" th:text="#{msg.libro.field.isbn}">ISBN</label>
+                <input type="text" id="isbn" th:field="*{ISBN}" class="form-control"/>
+                <!-- Aquí sale también el error de ISBN duplicado (rejectValue del controller) -->
+                <div class="text-danger" th:if="${#fields.hasErrors('ISBN')}" th:errors="*{ISBN}"></div>
+            </div>
+
+            <div class="mb-3">
+                <label for="titulo" class="form-label" th:text="#{msg.libro.field.titulo}">Título</label>
+                <input type="text" id="titulo" th:field="*{titulo}" class="form-control"/>
+                <div class="text-danger" th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}"></div>
+            </div>
+
+            <div class="mb-3">
+                <label for="autor" class="form-label" th:text="#{msg.libro.field.autor}">Autor</label>
+                <input type="text" id="autor" th:field="*{autor}" class="form-control"/>
+                <div class="text-danger" th:if="${#fields.hasErrors('autor')}" th:errors="*{autor}"></div>
+            </div>
+
+            <div class="mb-3">
+                <label for="editorial" class="form-label" th:text="#{msg.libro.field.editorial}">Editorial</label>
+                <input type="text" id="editorial" th:field="*{editorial}" class="form-control"/>
+                <div class="text-danger" th:if="${#fields.hasErrors('editorial')}" th:errors="*{editorial}"></div>
+            </div>
+
+            <div class="mb-3">
+                <label for="anioPublicacion" class="form-label" th:text="#{msg.libro.field.anioPublicacion}">Año</label>
+                <input type="text" id="anioPublicacion" th:field="*{anioPublicacion}" class="form-control"/>
+                <div class="text-danger" th:if="${#fields.hasErrors('anioPublicacion')}" th:errors="*{anioPublicacion}"></div>
+            </div>
+
+            <!-- Portada (opcional) -->
+            <div class="mb-3">
+                <label for="portadaFile" class="form-label" th:text="#{msg.libro.field.portada}">Portada</label>
+
+                <!-- Solo en edición (LibroUpdateDTO tiene urlPortada; LibroCreateDTO no) -->
+                <th:block th:if="${libro.id != null}">
+                    <!-- La portada actual viaja oculta para no perderla si el formulario vuelve con errores -->
+                    <input type="hidden" th:field="*{urlPortada}"/>
+                    <div th:if="*{urlPortada != null and urlPortada != ''}" class="mb-2">
+                        <img th:src="@{*{urlPortada}}" alt="Portada actual" class="img-thumbnail" style="max-height: 160px;"/>
+                        <div class="form-text" th:text="#{msg.libro.portada.keep}">Si no eliges otra imagen, se mantiene la actual.</div>
+                    </div>
+                </th:block>
+
+                <!-- Sin th:field: un input de tipo file no puede tener valor inicial.
+                     El name tiene que coincidir con el atributo MultipartFile del DTO -->
+                <input type="file" id="portadaFile" name="portadaFile" class="form-control"
+                       accept="image/jpeg,image/png,image/webp,image/gif"/>
+                <div class="form-text" th:text="#{msg.libro.portada.help}">JPG, PNG, WEBP o GIF. Máximo 2 MB.</div>
+                <div class="text-danger" th:if="${#fields.hasErrors('portadaFile')}" th:errors="*{portadaFile}"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary"
+                    th:text="${libro.id} == null ? #{msg.action.create} : #{msg.action.update}">Guardar</button>
+            <a th:href="@{/libros}" class="btn btn-secondary" th:text="#{msg.action.backList}">Volver</a>
+        </form>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<div th:replace="~{fragments/scripts :: scripts}"></div>
+</body>
+</html>

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @NoArgsConstructor
@@ -35,4 +36,10 @@ public class LibroUpdateDTO {
     @NotBlank(message = "{msg.libro.anio.notEmpty}")
     @Size(max = 10, message = "{msg.libro.anio.size}")
     private String anioPublicacion;
+
+    // Portada actual (viaja en un campo oculto para poder mostrarla en el formulario)
+    private String urlPortada;
+
+    // Nueva portada subida (opcional): si viene vacía, se mantiene la actual
+    private MultipartFile portadaFile;
 }

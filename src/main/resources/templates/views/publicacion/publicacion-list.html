@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head (#{msg.publicacion-list.page.title})}"></head>
+
+<body class="d-flex flex-column h-100">
+
+<!-- Cabecera común -->
+<header th:replace="~{fragments/header :: header}"></header>
+
+<main class="list-page">
+    <div class="list-card">
+
+        <!-- Título -->
+        <h1 th:text="#{msg.publicacion-list.title}">Listado de publicaciones</h1>
+
+        <!-- Botón para añadir -->
+        <a th:href="@{/publicaciones/new}" class="btn btn-success"
+           th:text="#{msg.publicacion-list.add}">Nueva publicación</a>
+
+        <!-- Mensajes flash que manda el controller (solo se pintan si existen) -->
+        <div th:if="${successMessage}" class="alert alert-success mt-3" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger mt-3" th:text="${errorMessage}"></div>
+
+        <!-- Si no hay publicaciones -->
+        <div th:if="${publicaciones == null or #lists.isEmpty(publicaciones)}"
+             class="alert alert-info mt-3"
+             th:text="#{msg.publicacion-list.empty}">No hay publicaciones.</div>
+
+        <!-- Tabla: una fila por cada PublicacionDTO de ${publicaciones} -->
+        <table th:unless="${publicaciones == null or #lists.isEmpty(publicaciones)}"
+               class="table table-bordered table-striped mt-3">
+            <thead>
+            <tr>
+                <th th:text="#{msg.publicacion.field.id}">ID</th>
+                <th th:text="#{msg.publicacion.field.libro}">Libro</th>
+                <th th:text="#{msg.publicacion.field.precio}">Precio</th>
+                <th th:text="#{msg.publicacion.field.descripcion}">Descripción</th>
+                <th th:text="#{msg.publicacion.field.fechaPublicacion}">Fecha</th>
+                <th th:text="#{msg.action.actions}">Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="p : ${publicaciones}">
+                <td th:text="${p.id}"></td>
+                <!-- Campo representativo de la entidad relacionada (pauta 7) -->
+                <td th:text="${p.libroTitulo}"></td>
+                <td th:text="${p.precio} + ' €'"></td>
+                <td th:text="${p.descripcion}"></td>
+                <td th:text="${p.fechaPublicacion}"></td>
+                <td class="text-nowrap">
+                    <!-- Ver detalle -->
+                    <a th:href="@{/publicaciones/detail(id=${p.id})}"
+                       class="btn btn-outline-secondary btn-sm"
+                       th:text="#{msg.action.view}">Ver</a>
+
+                    <!-- Editar -->
+                    <a th:href="@{/publicaciones/edit(id=${p.id})}"
+                       class="btn btn-primary btn-sm"
+                       th:text="#{msg.action.edit}">Editar</a>
+
+                    <!-- Eliminar: es un POST, por eso va en un formulario -->
+                    <form th:action="@{/publicaciones/delete}" method="post" class="d-inline">
+                        <input type="hidden" name="id" th:value="${p.id}"/>
+                        <button type="submit" class="btn btn-danger btn-sm"
+                                th:data-confirm="#{msg.publicacion-list.confirmDelete}"
+                                onclick="return confirm(this.dataset.confirm);"
+                                th:text="#{msg.action.delete}">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- Volver al inicio -->
+        <a th:href="@{/}" class="btn btn-secondary mt-2" th:text="#{msg.action.backHome}">Volver al inicio</a>
+    </div>
+</main>
+
+<!-- Pie y scripts comunes -->
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<div th:replace="~{fragments/scripts :: scripts}"></div>
+</body>
+</html>

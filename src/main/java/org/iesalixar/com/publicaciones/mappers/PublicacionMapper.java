@@ -34,7 +34,7 @@ public class PublicacionMapper {
         dto.setDescripcion(entity.getDescripcion());
         dto.setFechaPublicacion(entity.getFechaPublicacion());
         // Relación N:1 -> el libro entero, convertido con el mapper de Libro
-        dto.setLibro(LibroMapper.toDTOList(entity.getLibro()));
+        dto.setLibro(LibroMapper.toDTO(entity.getLibro()));
         return dto;
     }
 

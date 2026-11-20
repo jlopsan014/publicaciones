@@ -17,6 +17,7 @@ public class LibroDetailDTO {
     private String autor;
     private String editorial;
     private String anioPublicacion;
+    private String urlPortada;
 
     private List<PublicacionDTO> publicaciones = new ArrayList<>();
 }

@@ -9,7 +9,7 @@ import org.iesalixar.com.publicaciones.entities.Libro;
 import java.util.List;
 
 public class LibroMapper {
-    public static LibroDTO toDTOList(Libro entity) {
+    public static LibroDTO toDTO(Libro entity) {
         if (entity == null) return null;
         LibroDTO dto = new LibroDTO();
         dto.setId(entity.getId());
@@ -18,12 +18,13 @@ public class LibroMapper {
         dto.setAutor(entity.getAutor());
         dto.setEditorial(entity.getEditorial());
         dto.setAnioPublicacion(entity.getAnioPublicacion());
+        dto.setUrlPortada(entity.getUrlPortada());
         return dto;
     }
 
-    public static List<LibroDTO> toDTO(List<Libro> entities) {
+    public static List<LibroDTO> toDTOList(List<Libro> entities) {
         if (entities == null) return List.of();
-        return entities.stream().map(LibroMapper::toDTOList).toList();
+        return entities.stream().map(LibroMapper::toDTO).toList();
     }
 
     public static LibroDetailDTO toDetailDTO(Libro entity) {
@@ -35,6 +36,7 @@ public class LibroMapper {
         dto.setAutor(entity.getAutor());
         dto.setEditorial(entity.getEditorial());
         dto.setAnioPublicacion(entity.getAnioPublicacion());
+        dto.setUrlPortada(entity.getUrlPortada());
 
         if (entity.getPublicaciones() != null) {
             dto.setPublicaciones(
@@ -66,9 +68,12 @@ public class LibroMapper {
         dto.setAutor(entity.getAutor());
         dto.setEditorial(entity.getEditorial());
         dto.setAnioPublicacion(entity.getAnioPublicacion());
+        dto.setUrlPortada(entity.getUrlPortada());
         return dto;
     }
 
+    // Nota: toEntity y copyToExistingEntity NO tocan urlPortada.
+    // La portada la gestiona el service (guarda el fichero y asigna la ruta).
     public static void copyToExistingEntity(LibroUpdateDTO dto, Libro entity) {
         if (dto == null || entity == null) return;
         entity.setISBN(dto.getISBN());

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @NoArgsConstructor
@@ -32,4 +33,8 @@ public class LibroCreateDTO {
     @NotBlank(message = "{msg.libro.anio.notEmpty}")
     @Size(max = 10, message = "{msg.libro.anio.size}")
     private String anioPublicacion;
+
+    // Fichero de portada subido desde el formulario (opcional).
+    // El service lo valida, lo guarda en disco y guarda su ruta en Libro.urlPortada
+    private MultipartFile portadaFile;
 }

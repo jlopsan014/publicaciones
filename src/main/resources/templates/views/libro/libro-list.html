@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head (#{msg.libro-list.page.title})}"></head>
+
+<body class="d-flex flex-column h-100">
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<main class="list-page">
+    <div class="list-card">
+
+        <h1 th:text="#{msg.libro-list.title}">Listado de libros</h1>
+
+        <a th:href="@{/libros/new}" class="btn btn-success" th:text="#{msg.libro-list.add}">Nuevo libro</a>
+
+        <!-- Mensajes flash -->
+        <div th:if="${successMessage}" class="alert alert-success mt-3" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger mt-3" th:text="${errorMessage}"></div>
+
+        <div th:if="${libros == null or #lists.isEmpty(libros)}"
+             class="alert alert-info mt-3"
+             th:text="#{msg.libro-list.empty}">No hay libros.</div>
+
+        <!-- Tabla: una fila por cada LibroDTO de ${libros} -->
+        <table th:unless="${libros == null or #lists.isEmpty(libros)}"
+               class="table table-bordered table-striped mt-3">
+            <thead>
+            <tr>
+                <th th:text="#{msg.libro.field.id}">ID</th>
+                <th th:text="#{msg.libro.field.portada}">Portada</th>
+                <th th:text="#{msg.libro.field.isbn}">ISBN</th>
+                <th th:text="#{msg.libro.field.titulo}">Título</th>
+                <th th:text="#{msg.libro.field.autor}">Autor</th>
+                <th th:text="#{msg.libro.field.editorial}">Editorial</th>
+                <th th:text="#{msg.libro.field.anioPublicacion}">Año</th>
+                <th th:text="#{msg.action.actions}">Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="l : ${libros}">
+                <td th:text="${l.id}"></td>
+                <!-- Miniatura de la portada (o un guion si no tiene) -->
+                <td class="text-center">
+                    <img th:if="${l.urlPortada != null}" th:src="@{${l.urlPortada}}" th:alt="${l.titulo}"
+                         style="height: 48px; width: auto;" class="rounded"/>
+                    <span th:if="${l.urlPortada == null}" class="text-muted">—</span>
+                </td>
+                <td th:text="${l.ISBN}"></td>
+                <td th:text="${l.titulo}"></td>
+                <td th:text="${l.autor}"></td>
+                <td th:text="${l.editorial}"></td>
+                <td th:text="${l.anioPublicacion}"></td>
+                <td class="text-nowrap">
+                    <a th:href="@{/libros/detail(id=${l.id})}" class="btn btn-outline-secondary btn-sm"
+                       th:text="#{msg.action.view}">Ver</a>
+                    <a th:href="@{/libros/edit(id=${l.id})}" class="btn btn-primary btn-sm"
+                       th:text="#{msg.action.edit}">Editar</a>
+                    <form th:action="@{/libros/delete}" method="post" class="d-inline">
+                        <input type="hidden" name="id" th:value="${l.id}"/>
+                        <!-- Aviso: al borrar un libro se borran también sus publicaciones (cascade) -->
+                        <button type="submit" class="btn btn-danger btn-sm"
+                                th:data-confirm="#{msg.libro-list.confirmDelete}"
+                                onclick="return confirm(this.dataset.confirm);"
+                                th:text="#{msg.action.delete}">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <a th:href="@{/}" class="btn btn-secondary mt-2" th:text="#{msg.action.backHome}">Volver al inicio</a>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<div th:replace="~{fragments/scripts :: scripts}"></div>
+</body>
+</html>

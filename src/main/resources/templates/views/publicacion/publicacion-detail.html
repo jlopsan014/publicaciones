@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head (#{msg.publicacion-detail.page.title})}"></head>
+
+<body class="d-flex flex-column h-100">
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<main class="form-page">
+    <div class="form-card">
+
+        <!-- ${publicacion} es un PublicacionDetailDTO -->
+        <h1>
+            <span th:text="#{msg.publicacion-detail.title}">Detalle de la publicación</span>
+            <span th:text="'#' + ${publicacion.id}"></span>
+        </h1>
+
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <!-- Datos propios de la publicación -->
+        <div class="mt-3">
+            <h2 class="h5" th:text="#{msg.publicacion-detail.section.data}">Datos de la publicación</h2>
+            <dl class="row">
+                <dt class="col-sm-4" th:text="#{msg.publicacion.field.id}">ID</dt>
+                <dd class="col-sm-8" th:text="${publicacion.id}"></dd>
+
+                <dt class="col-sm-4" th:text="#{msg.publicacion.field.precio}">Precio</dt>
+                <dd class="col-sm-8" th:text="${publicacion.precio} + ' €'"></dd>
+
+                <dt class="col-sm-4" th:text="#{msg.publicacion.field.descripcion}">Descripción</dt>
+                <dd class="col-sm-8" th:text="${publicacion.descripcion}"></dd>
+
+                <dt class="col-sm-4" th:text="#{msg.publicacion.field.fechaPublicacion}">Fecha</dt>
+                <dd class="col-sm-8" th:text="${publicacion.fechaPublicacion}"></dd>
+            </dl>
+        </div>
+
+        <!-- Libro asociado: es un objeto LibroDTO (una publicación tiene UN libro) -->
+        <div class="mt-4">
+            <h2 class="h5" th:text="#{msg.publicacion-detail.section.libro}">Libro</h2>
+
+            <div th:if="${publicacion.libro == null}" class="alert alert-info"
+                 th:text="#{msg.publicacion-detail.libro.empty}">Esta publicación no tiene libro.</div>
+
+            <div th:if="${publicacion.libro != null}">
+                <!-- Portada del libro (viene dentro del LibroDTO) -->
+                <img th:if="${publicacion.libro.urlPortada != null}" th:src="@{${publicacion.libro.urlPortada}}"
+                     th:alt="${publicacion.libro.titulo}" class="img-thumbnail mb-3" style="max-height: 200px;"/>
+                <dl class="row">
+                    <dt class="col-sm-4" th:text="#{msg.libro.field.titulo}">Título</dt>
+                    <dd class="col-sm-8" th:text="${publicacion.libro.titulo}"></dd>
+
+                    <dt class="col-sm-4" th:text="#{msg.libro.field.autor}">Autor</dt>
+                    <dd class="col-sm-8" th:text="${publicacion.libro.autor}"></dd>
+
+                    <dt class="col-sm-4" th:text="#{msg.libro.field.isbn}">ISBN</dt>
+                    <dd class="col-sm-8" th:text="${publicacion.libro.ISBN}"></dd>
+
+                    <dt class="col-sm-4" th:text="#{msg.libro.field.editorial}">Editorial</dt>
+                    <dd class="col-sm-8" th:text="${publicacion.libro.editorial}"></dd>
+
+                    <dt class="col-sm-4" th:text="#{msg.libro.field.anioPublicacion}">Año</dt>
+                    <dd class="col-sm-8" th:text="${publicacion.libro.anioPublicacion}"></dd>
+                </dl>
+
+                <!-- Ir al detalle del libro -->
+                <a class="btn btn-sm btn-outline-primary"
+                   th:href="@{/libros/detail(id=${publicacion.libro.id})}"
+                   th:text="#{msg.publicacion-detail.libro.viewDetail}">Ver libro</a>
+            </div>
+        </div>
+
+        <!-- Acciones -->
+        <div class="mt-4">
+            <a class="btn btn-primary" th:href="@{/publicaciones/edit(id=${publicacion.id})}"
+               th:text="#{msg.action.edit}">Editar</a>
+            <a class="btn btn-secondary" th:href="@{/publicaciones}"
+               th:text="#{msg.action.backList}">Volver al listado</a>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<div th:replace="~{fragments/scripts :: scripts}"></div>
+</body>
+</html>

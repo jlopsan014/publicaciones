@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head (#{msg.libro-detail.page.title})}"></head>
+
+<body class="d-flex flex-column h-100">
+
+<header th:replace="~{fragments/header :: header}"></header>
+
+<main class="form-page">
+    <div class="form-card">
+
+        <!-- ${libro} es un LibroDetailDTO -->
+        <h1>
+            <span th:text="#{msg.libro-detail.title}">Detalle del libro</span>:
+            <span th:text="${libro.titulo}"></span>
+        </h1>
+
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+        <!-- Portada: la imagen subida (o un aviso si no tiene) -->
+        <div class="mt-3">
+            <img th:if="${libro.urlPortada != null}" th:src="@{${libro.urlPortada}}"
+                 th:alt="${libro.titulo}" class="img-thumbnail" style="max-height: 260px;"/>
+            <div th:if="${libro.urlPortada == null}" class="text-muted fst-italic"
+                 th:text="#{msg.libro.portada.none}">Sin portada</div>
+        </div>
+
+        <!-- Datos propios del libro -->
+        <div class="mt-3">
+            <h2 class="h5" th:text="#{msg.libro-detail.section.data}">Datos del libro</h2>
+            <dl class="row">
+                <dt class="col-sm-4" th:text="#{msg.libro.field.id}">ID</dt>
+                <dd class="col-sm-8" th:text="${libro.id}"></dd>
+
+                <dt class="col-sm-4" th:text="#{msg.libro.field.isbn}">ISBN</dt>
+                <dd class="col-sm-8" th:text="${libro.ISBN}"></dd>
+
+                <dt class="col-sm-4" th:text="#{msg.libro.field.titulo}">Título</dt>
+                <dd class="col-sm-8" th:text="${libro.titulo}"></dd>
+
+                <dt class="col-sm-4" th:text="#{msg.libro.field.autor}">Autor</dt>
+                <dd class="col-sm-8" th:text="${libro.autor}"></dd>
+
+                <dt class="col-sm-4" th:text="#{msg.libro.field.editorial}">Editorial</dt>
+                <dd class="col-sm-8" th:text="${libro.editorial}"></dd>
+
+                <dt class="col-sm-4" th:text="#{msg.libro.field.anioPublicacion}">Año</dt>
+                <dd class="col-sm-8" th:text="${libro.anioPublicacion}"></dd>
+            </dl>
+        </div>
+
+        <!-- Publicaciones del libro: una LISTA (un libro tiene MUCHAS publicaciones) -->
+        <div class="mt-4">
+            <h2 class="h5" th:text="#{msg.libro-detail.section.publicaciones}">Publicaciones</h2>
+
+            <div th:if="${#lists.isEmpty(libro.publicaciones)}" class="alert alert-info"
+                 th:text="#{msg.libro-detail.publicaciones.empty}">Este libro no tiene publicaciones.</div>
+
+            <table th:unless="${#lists.isEmpty(libro.publicaciones)}"
+                   class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th th:text="#{msg.publicacion.field.id}">ID</th>
+                    <th th:text="#{msg.publicacion.field.precio}">Precio</th>
+                    <th th:text="#{msg.publicacion.field.descripcion}">Descripción</th>
+                    <th th:text="#{msg.publicacion.field.fechaPublicacion}">Fecha</th>
+                    <th th:text="#{msg.action.actions}">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="p : ${libro.publicaciones}">
+                    <td th:text="${p.id}"></td>
+                    <td th:text="${p.precio} + ' €'"></td>
+                    <td th:text="${p.descripcion}"></td>
+                    <td th:text="${p.fechaPublicacion}"></td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-secondary"
+                           th:href="@{/publicaciones/detail(id=${p.id})}"
+                           th:text="#{msg.action.view}">Ver</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-4">
+            <a class="btn btn-primary" th:href="@{/libros/edit(id=${libro.id})}" th:text="#{msg.action.edit}">Editar</a>
+            <a class="btn btn-secondary" th:href="@{/libros}" th:text="#{msg.action.backList}">Volver al listado</a>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}"></footer>
+<div th:replace="~{fragments/scripts :: scripts}"></div>
+</body>
+</html>
